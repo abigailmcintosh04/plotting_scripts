@@ -28,13 +28,13 @@ q_plot = matched_jets[q_mask]
 c_plot = matched_jets[c_mask]
 b_plot = matched_jets[b_mask]
 
-h_q = Histogram(values=q_plot[f'GN2_p{flav}'], flavour='ujets')
-h_c = Histogram(values=c_plot[f'GN2_p{flav}'], flavour='cjets')
-h_b = Histogram(values=b_plot[f'GN2_p{flav}'], flavour='bjets')
+selected_flavour = f'GN2_p{flav}'
+
+h_q = Histogram(values=q_plot[selected_flavour], flavour='ujets', bins=100, bins_range=(0,1))
+h_c = Histogram(values=c_plot[selected_flavour], flavour='cjets', bins=100, bins_range=(0,1))
+h_b = Histogram(values=b_plot[selected_flavour], flavour='bjets', bins=100, bins_range=(0,1))
 
 plot = HistogramPlot(
-    bins=100,
-    bins_range=(0,1),
     ylabel='Normalised number of jets',
     xlabel=f'${flav}$-jets probability',
     logy = True,
