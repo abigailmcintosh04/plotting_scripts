@@ -6,7 +6,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('input_file', type=str)
 parser.add_argument('output_file', type=str)
-parser.add_argument('flavour', type=str, choices=['q', 'c', 'b'])
+parser.add_argument('flavour', type=str, choices=['u', 'c', 'b'])
 
 args = parser.parse_args()
 
