@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('input_file', type=str)
 parser.add_argument('output_file', type=str)
-parser.add_argument('parameter', type=str, choices=['truth_pt', 'pt', 'eta', 'phi', 'energy', 'mass', 'dr', 'GN2_truth_pt', 'jet_minus_truth', 'GN2_minus_truth'])
+parser.add_argument('parameter', type=str, choices=['truth_pt', 'pt', 'eta', 'phi', 'energy', 'mass', 'dr', 'GN2_truth_pt', 'jet_minus_truth', 'GN2_minus_truth', 'GN2_truth_rel'])
 
 args = parser.parse_args()
 
@@ -25,7 +25,8 @@ labels_dict = {
     'dr': '$Delta$R to nearest truth jet',
     'GN2_truth_pt': 'GN2 jet truth $p_T$ / GeV',
     'jet_minus_truth': 'Jet $p_T$ - truth jet $p_T$ / GeV',
-    'GN2_minus_truth': 'GN2 $p_T$ - truth $p_T$ / GeV'
+    'GN2_minus_truth': 'GN2 $p_T$ - truth $p_T$ / GeV',
+    'GN2_truth_rel': '(GN2 $p_T$ - truth $p_T$) / truth $p_T$'
 }
 
 with h5py.File(input_file, 'r') as h5file:
@@ -50,6 +51,10 @@ elif parameter == 'GN2_minus_truth':
     q_plot = q_all['GN2_truth_pt'] - q_all['truth_pt']
     c_plot = c_all['GN2_truth_pt'] - c_all['truth_pt']
     b_plot = b_all['GN2_truth_pt'] - b_all['truth_pt']
+elif parameter == 'GN2_truth_rel':
+    q_plot = (q_all['GN2_truth_pt'] - q_all['truth_pt']) / q_all['truth_pt']
+    c_plot = (c_all['GN2_truth_pt'] - c_all['truth_pt']) / c_all['truth_pt']
+    b_plot = (b_all['GN2_truth_pt'] - b_all['truth_pt']) / b_all['truth_pt']
 else:
     q_plot = q_all[parameter]
     c_plot = c_all[parameter]
