@@ -6,7 +6,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('input_file', type=str)
 parser.add_argument('output_file', type=str)
-parser.add_argument('parameter', type=str, choices=['truth_pt', 'pt', 'eta', 'phi', 'energy', 'mass', 'dr'])
+parser.add_argument('parameter', type=str, choices=['truth_pt', 'pt', 'eta', 'phi', 'energy', 'mass', 'dr', 'GN2_truth_pt', 'jet_minus_truth', 'jet_minus_GN2'])
 
 args = parser.parse_args()
 
@@ -21,7 +21,10 @@ labels_dict = {
     'phi': 'Jet phi / rad',
     'energy': 'Jet energy / GeV',
     'mass': 'Jet mass / GeV',
-    'dr': '$Delta$R to nearest truth jet'
+    'dr': '$Delta$R to nearest truth jet',
+    'GN2_truth_pt': 'GN2 jet truth $p_T$ / GeV',
+    'jet_minus_truth': 'Jet $p_T$ - truth jet $p_T$ / GeV',
+    'jet_minus_GN2': 'Jet $p_T$ - GN2 jet $p_T$ / GeV'
 }
 
 with h5py.File(input_file, 'r') as h5file:
@@ -34,13 +37,26 @@ q_mask = matched_jets['flavour_label'] == 0
 c_mask = matched_jets['flavour_label'] == 1
 b_mask = matched_jets['flavour_label'] == 2
 
-q_plot = matched_jets[q_mask]
-c_plot = matched_jets[c_mask]
-b_plot = matched_jets[b_mask]
+q_all = matched_jets[q_mask]
+c_all = matched_jets[c_mask]
+b_all = matched_jets[b_mask]
 
-h_q = Histogram(values=q_plot[parameter], flavour='ujets', bins=100)
-h_c = Histogram(values=c_plot[parameter], flavour='cjets', bins=100)
-h_b = Histogram(values=b_plot[parameter], flavour='bjets', bins=100)
+if parameter == 'jet_minus_truth':
+    q_plot = q_all['pt'] - q_all['truth_pt']
+    c_plot = c_all['pt'] - c_all['truth_pt']
+    b_plot = b_all['pt'] - b_all['truth_pt']
+elif parameter == 'jet_minus_GN2':
+    q_plot = q_all['pt'] - q_all['GN2_truth_pt']
+    c_plot = c_all['pt'] - c_all['GN2_truth_pt']
+    b_plot = b_all['pt'] - b_all['GN2_truth_pt']
+else:
+    q_plot = q_all[parameter]
+    c_plot = c_all[parameter]
+    b_plot = b_all[parameter]
+
+h_q = Histogram(values=q_plot, flavour='ujets', bins=100)
+h_c = Histogram(values=c_plot, flavour='cjets', bins=100)
+h_b = Histogram(values=b_plot, flavour='bjets', bins=100)
 
 
 plot = HistogramPlot(
