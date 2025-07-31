@@ -8,12 +8,16 @@ parser = argparse.ArgumentParser()
 parser.add_argument('input_file', type=str)
 parser.add_argument('output_file', type=str)
 parser.add_argument('parameter', type=str, choices=['d0', 'eta', 'phi', 'eta_rel', 'phi_rel', 'pt_frac', 'dr', 'z0', 'signed_2d_ip', 'signed_3d_ip'])
+parser.add_argument('xmin', type=float)
+parser.add_argument('xmax', type=float)
 
 args = parser.parse_args()
 
 input_file = args.input_file
 output_file = args.output_file
 parameter = args.parameter
+xmin = args.xmin
+xmax = args.xmax
 
 labels_dict = {
     'd0': 'Track $d_0$ / mm',
@@ -32,17 +36,40 @@ with h5py.File(input_file, 'r') as h5file:
     consts = h5file['consts'][:]
     jets = h5file['jets'][:]
 
-matched_jets_mask = jets['is_matched'] == True
-matched_jets = jets[matched_jets_mask]
-matched_tracks = consts[matched_jets_mask]
+q_mask = jets['flavour_label'] == 0
+c_mask = jets['flavour_label'] == 1
+b_mask = jets['flavour_label'] == 2
 
-valid_track_mask = matched_tracks['valid'] == True
-valid_tracks = matched_tracks[valid_track_mask]
+q_all = consts[q_mask]
+c_all = consts[c_mask]
+b_all = consts[b_mask]
 
-q_mask = matched_jets['flavour_label'] == 0
-c_mask = matched_jets['flavour_label'] == 1
-b_mask = matched_jets['flavour_label'] == 2
+valid_q_mask = q_all['valid'] == True
+valid_c_mask = c_all['valid'] == True
+valid_b_mask = b_all['valid'] == True
 
-q_all = matched_tracks[q_mask]
-c_all = matched_tracks[c_mask]
-b_all = matched_tracks[b_mask]
+q_tracks = q_all[valid_q_mask]
+c_tracks = c_all[valid_c_mask]
+b_tracks = b_all[valid_b_mask]
+
+q_plot = q_tracks[parameter]
+c_plot = c_tracks[parameter]
+b_plot = b_tracks[parameter]
+
+h_q = Histogram(values=q_plot, flavour='ujets', bins=np.linspace(xmin, xmax, 100))
+h_c = Histogram(values=c_plot, flavour='cjets', bins=np.linspace(xmin, xmax, 100))
+h_b = Histogram(values=b_plot, flavour='bjets', bins=np.linspace(xmin, xmax, 100))
+
+plot = HistogramPlot(
+    ylabel='Normalised number of jets',
+    xlabel=labels_dict[parameter],
+    logy=True,
+    atlas_brand='Muon Collider'
+)
+
+plot.add(h_q)
+plot.add(h_c)
+plot.add(h_b)
+
+plot.draw()
+plot.savefig(output_file)
