@@ -8,12 +8,16 @@ parser = argparse.ArgumentParser()
 parser.add_argument('input_file', type=str)
 parser.add_argument('output_file', type=str)
 parser.add_argument('parameter', type=str, choices=['truth_pt', 'pt', 'eta', 'phi', 'energy', 'mass', 'dr', 'GN2_truth_pt', 'jet_minus_truth', 'GN2_minus_truth', 'GN2_truth_rel'])
+parser.add_argument('xmin', type=float)
+parser.add_argument('xmax', type=float)
 
 args = parser.parse_args()
 
 input_file = args.input_file
 output_file = args.output_file
 parameter = args.parameter
+xmin = args.xmin
+xmax = args.xmax
 
 labels_dict = {
     'truth_pt': 'Jet Truth $p_T$ / GeV',
@@ -22,7 +26,7 @@ labels_dict = {
     'phi': 'Jet phi / rad',
     'energy': 'Jet energy / GeV',
     'mass': 'Jet mass / GeV',
-    'dr': '$Delta$R to nearest truth jet',
+    'dr': '$\Delta$R to nearest truth jet',
     'GN2_truth_pt': 'GN2 jet truth $p_T$ / GeV',
     'jet_minus_truth': 'Jet $p_T$ - truth jet $p_T$ / GeV',
     'GN2_minus_truth': 'GN2 $p_T$ - truth $p_T$ / GeV',
@@ -60,9 +64,9 @@ else:
     c_plot = c_all[parameter]
     b_plot = b_all[parameter]
 
-h_q = Histogram(values=q_plot, flavour='ujets', bins=np.linspace(-1000, 1000, 100))
-h_c = Histogram(values=c_plot, flavour='cjets', bins=np.linspace(-1000, 1000, 100))
-h_b = Histogram(values=b_plot, flavour='bjets', bins=np.linspace(-1000, 1000, 100))
+h_q = Histogram(values=q_plot, flavour='ujets', bins=np.linspace(xmin, xmax, 100))
+h_c = Histogram(values=c_plot, flavour='cjets', bins=np.linspace(xmin, xmax, 100))
+h_b = Histogram(values=b_plot, flavour='bjets', bins=np.linspace(xmin, xmax, 100))
 
 
 plot = HistogramPlot(
