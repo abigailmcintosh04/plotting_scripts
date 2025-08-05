@@ -36,9 +36,6 @@ label_dict = {
 with h5py.File(input_file, 'r') as h5file:
     jets = h5file['jets'][:]
 
-truth_pt = jets['truth_pt']
-# opt_pt = []
-
 if plot_which == 'GN2_minus_truth':
     opt = jets['GN2_truth_pt'] - jets['truth_pt']
 elif plot_which == 'reco_minus_truth':
@@ -51,9 +48,9 @@ elif plot_which == 'reco':
 plt.figure(figsize=(12, 10))
 
 if islog:
-    plt.hist2d(truth_pt, opt, bins=no_bins, range=[[xmin, xmax], [ymin, ymax]], cmap='jet', norm='log')
+    plt.hist2d(jets['truth_pt'], opt, bins=no_bins, range=[[xmin, xmax], [ymin, ymax]], cmap='jet', norm='log')
 else:
-    plt.hist2d(truth_pt, opt, bins=no_bins, range=[[xmin, xmax], [ymin, ymax]], cmap='jet')
+    plt.hist2d(jets['truth_pt'], opt, bins=no_bins, range=[[xmin, xmax], [ymin, ymax]], cmap='jet')
 
 plt.ylabel(label_dict[plot_which])
 plt.xlabel('Truth Jet $p_T$ / GeV')
