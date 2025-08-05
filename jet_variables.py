@@ -7,7 +7,8 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('input_file', type=str)
 parser.add_argument('output_file', type=str)
-parser.add_argument('parameter', type=str, choices=['truth_pt', 'pt', 'eta', 'phi', 'energy', 'mass', 'dr', 'GN2_truth_pt', 'jet_minus_truth', 'GN2_minus_truth', 'GN2_truth_rel'])
+parser.add_argument('parameter', type=str, choices=['truth_pt', 'pt', 'eta', 'phi', 'energy', 'mass', 'dr', 
+                                                    'GN2_truth_pt', 'jet_minus_truth', 'GN2_minus_truth', 'GN2_truth_rel'])
 parser.add_argument('xmin', type=float)
 parser.add_argument('xmax', type=float)
 
