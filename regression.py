@@ -1,7 +1,9 @@
-import scipy.stats as sc
+import numpy as np
 
 def linear_regression(xdata, ydata):
-    gradient, intercept, _, _, _ = sc.linregress(xdata, ydata)
+    mc_arr = np.polyfit(xdata, ydata, 1)
+    gradient = mc_arr[0]
+    intercept = mc_arr[1]
     print(f'y = {gradient} * x + {intercept}')
     return gradient, intercept
 
