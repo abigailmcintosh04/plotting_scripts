@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import h5py
 import argparse
-import regression # type: ignore
 
 parser = argparse.ArgumentParser()
 
@@ -11,7 +10,6 @@ parser.add_argument('plot_which', type=str, choices=['GN2_minus_truth', 'reco_mi
 parser.add_argument('coords', nargs=4, type=float)
 parser.add_argument('--logarithmic', '-l', action='store_true')
 parser.add_argument('--bins', '-b', type=int, default=100)
-parser.add_argument('--skew', '-s', action='store_true')
 
 args = parser.parse_args()
 
@@ -21,7 +19,6 @@ plot_which = args.plot_which
 coords = args.coords
 islog = args.logarithmic
 no_bins = args.bins
-skew = args.skew
 
 label_dict = {
     'GN2_minus_truth': 'GN2 Jet $p_T$ - Truth Jet $p_T$ / GeV',
@@ -37,15 +34,9 @@ plotx = jets['truth_pt']
 
 if plot_which == 'GN2_minus_truth':
     ploty = jets['GN2_truth_pt'] - jets['truth_pt']
-    m, c = regression.linear_regression(plotx, ploty)
-    if skew:
-        ploty = regression.skew_data(plotx, ploty, m, c)
 
 elif plot_which == 'reco_minus_truth':
     ploty = jets['pt'] - jets['truth_pt']
-    m, c = regression.linear_regression(plotx, ploty)
-    if skew:
-        ploty = regression.skew_data(plotx, ploty, m, c)
 
 elif plot_which == 'GN2':
     ploty = jets['GN2_truth_pt']
