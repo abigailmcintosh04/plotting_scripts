@@ -12,6 +12,7 @@ parser.add_argument('coords', nargs=4, type=float)
 parser.add_argument('--logarithmic', '-l', action='store_true')
 parser.add_argument('--bins', '-b', type=int, default=100)
 parser.add_argument('--regression_line', '-r', action='store_true')
+parser.add_argument('--yx_line', '-y', action='store_true')
 
 args = parser.parse_args()
 
@@ -22,6 +23,7 @@ coords = args.coords
 islog = args.logarithmic
 no_bins = args.bins
 reg_line = args.regression_line
+yx_line = args.yx_line
 
 label_dict = {
     'GN2_minus_truth': 'GN2 Jet $p_T$ - Truth Jet $p_T$ / GeV',
@@ -62,6 +64,9 @@ plt.colorbar()
 if reg_line:
     m, c = regression.linear_regression(plotx, ploty)
     plt.axline(xy1=(0, c), slope=m, c='k')
+
+if yx_line:
+    plt.axline(xy1=(0, 0), slope=1, c='k')
 
 plt.savefig(output_file, bbox_inches='tight')
 plt.close()
