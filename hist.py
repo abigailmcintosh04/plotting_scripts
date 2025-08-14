@@ -50,7 +50,7 @@ elif plot_which == 'reco':
     ploty = jets['pt']
 
 
-plt.figure(figsize=(12, 10))
+plt.figure(figsize=(6, 5))
 
 if islog:
     plt.hist2d(plotx, ploty, bins=no_bins, range=[[coords[0], coords[1]], [coords[2], coords[3]]], cmap='jet', norm='log')
@@ -68,5 +68,5 @@ if reg_line:
 if yx_line:
     plt.axline(xy1=(0, 0), slope=1, c='k')
 
-plt.savefig(output_file, bbox_inches='tight')
+plt.savefig(output_file, bbox_inches='tight', dpi=200)
 plt.close()
