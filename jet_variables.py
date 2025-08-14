@@ -1,5 +1,6 @@
 import h5py
 from puma import Histogram, HistogramPlot
+import matplotlib.pyplot as plt
 import argparse
 import numpy as np
 
@@ -39,13 +40,6 @@ labels_dict = {
 with h5py.File(input_file, 'r') as h5file:
     jets = h5file['jets'][:]
 
-plot = HistogramPlot(
-    ylabel='Normalised number of jets',
-    xlabel=labels_dict[parameter],
-    logy = True,
-    atlas_brand = 'Muon Collider'
-)
-
 matched_mask = jets['is_matched'] == True
 matched_jets = jets[matched_mask]
 
@@ -64,10 +58,27 @@ if regression_only:
     else:
         all_plot = matched_jets[parameter]
 
-    h_all = Histogram(values=all_plot, bins=np.linspace(xmin, xmax, 100))
-    plot.add(h_all)
+    bins=np.linspace(xmin, xmax, 100)
+
+    plt.figure(figsize=(6.4, 4.8))
+
+    plt.hist(all_plot, bins=bins, label=labels_dict[parameter], color='tab:blue', log=True, histtype='step', linewidth=2, density=True)
+    plt.legend(loc='upper right')
+    plt.ylabel('Normalised number of jets')
+    plt.margins(x=0)
+    plt.minorticks_on()
+    plt.tick_params(axis='both', which='both', direction='in', top=True, right=True)
+
+    plt.savefig(output_file, bbox_inches='tight', dpi=200)
+    plt.close()
+
 
 else:
+
+    plot = HistogramPlot(ylabel='Normalised number of jets', 
+                         xlabel=labels_dict[parameter],
+                        logy = True,
+                        atlas_brand = 'Muon Collider')
 
     q_mask = matched_jets['flavour_label'] == 0
     c_mask = matched_jets['flavour_label'] == 1
@@ -105,5 +116,6 @@ else:
     plot.add(h_c)
     plot.add(h_b)
 
-plot.draw()
-plot.savefig(output_file)
+    plot.draw()
+    plot.savefig(output_file)
+
